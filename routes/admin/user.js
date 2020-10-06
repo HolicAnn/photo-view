@@ -10,7 +10,6 @@ const {
     jstSecret
 } = require('../../util/secret.js')
 
-//登录
 router.post("/login", async ctx => {
     let {
         username,
@@ -88,7 +87,6 @@ router.post("/upload", async (ctx, next) => {
             let file_name = uuid.v4() + '.jpg';//只能存储jpeg格式图片
             //let file_path = '/Users/alan/Desktop/xin.jpeg';//图片地址
             let file_path = filepath;
-            let url = '';//临时存储url地址
             const upload_file = (file_name, file_path) => {
                 const file_save_path = prefix + file_name;// 保存到七牛的地址
                 const up_token = token(bucket, file_save_path); // 七牛上传的token
@@ -98,7 +96,6 @@ router.post("/upload", async (ctx, next) => {
                     if (!err) {
                         let url_ = 'http://mini.sylvia.org.cn/' + ret.key;
                         console.log(url_);// 上传成功， 处理返回值
-                        url = url_;
                     } else {
                         console.error(err);// 上传失败， 处理返回代码
                     }
@@ -106,8 +103,7 @@ router.post("/upload", async (ctx, next) => {
             }
 
             upload_file(file_name, file_path);
-
-            //if (url == '') {
+            let url = 'http://mini.sylvia.org.cn/' + prefix + file_name;
             let product = await new Product({
                 name,
                 memo,
@@ -129,14 +125,6 @@ router.post("/upload", async (ctx, next) => {
                     msg: "创建失败",
                 });
             }
-            /*
-        } else {
-            return (ctx.body = {
-                state: 202,
-                msg: "创建失败",
-            });
-        }
-        */
         } else {
             return (ctx.body = {
                 state: 201,
@@ -151,7 +139,6 @@ router.post("/upload", async (ctx, next) => {
     }
 });
 
-//产品列表
 router.get("/list", async ctx => {
     let list = await Product.find({}).sort({ seq: -1 })
         .then((doc) => {
@@ -163,6 +150,93 @@ router.get("/list", async ctx => {
         msg: "获取商品成功",
         list: list
     });
+});
+
+router.get("/detail", async ctx => {
+    let {
+        id
+    } = ctx.request.query;
+
+    let data = await Product.findById({
+        _id: id
+    }).then((doc) => {
+        return doc;
+    })
+    if (data) {
+        return ctx.body = {
+            state: 200,
+            data: data,
+        }
+    } else {
+        return ctx.body = {
+            state: 201,
+            msg: "错误，商品不存在",
+        }
+    }
+});
+
+router.post("/delete", async (ctx) => {
+    let { id } = ctx.request.body;
+    let creator = await getUserInfo(ctx, jstSecret, "propduct");//获取token
+    if (creator) {
+        let result = await Product.findByIdAndDelete({
+            _id: id,
+        });
+
+        if (result) {
+            return (ctx.body = {
+                state: 200,
+                msg: "删除成功",
+            });
+        } else {
+            return (ctx.body = {
+                state: 201,
+                msg: "操作失败",
+            });
+        }
+    } else {
+        return (ctx.body = {
+            state: 201,
+            msg: "无权限,请登录管理员账号",
+        });
+    }
+});
+
+router.post('/edit', async (ctx, next) => {
+    let {
+        id,
+        name,
+        memo,
+        seq,
+    } = ctx.request.body;
+    let creator = await getUserInfo(ctx, jstSecret, "propduct");//获取token
+    if (creator) {
+        let result = await Product.findOneAndUpdate({
+            _id: id,
+        }, {
+            name,
+            memo,
+            seq
+        }).then(d => {
+            return d;
+        })
+        if (result) {
+            return ctx.body = {
+                state: 200,
+                msg: '编辑成功',
+            }
+        } else {
+            return ctx.body = {
+                state: 201,
+                msg: '编辑失败',
+            }
+        }
+    } else {
+        return (ctx.body = {
+            state: 201,
+            msg: "无权限,请登录管理员账号",
+        });
+    }
 });
 
 module.exports = router
