@@ -177,20 +177,27 @@ router.get("/detail", async ctx => {
 
 router.post("/delete", async (ctx) => {
     let { id } = ctx.request.body;
-
-    let result = await Product.findByIdAndDelete({
-        _id: id,
-    });
-
-    if (result) {
-        return (ctx.body = {
-            state: 200,
-            msg: "删除成功",
+    let creator = await getUserInfo(ctx, jstSecret, "propduct");//获取token
+    if (creator) {
+        let result = await Product.findByIdAndDelete({
+            _id: id,
         });
+
+        if (result) {
+            return (ctx.body = {
+                state: 200,
+                msg: "删除成功",
+            });
+        } else {
+            return (ctx.body = {
+                state: 201,
+                msg: "操作失败",
+            });
+        }
     } else {
         return (ctx.body = {
             state: 201,
-            msg: "操作失败",
+            msg: "无权限,请登录管理员账号",
         });
     }
 });
@@ -202,26 +209,33 @@ router.post('/edit', async (ctx, next) => {
         memo,
         seq,
     } = ctx.request.body;
-
-    let result = await Product.findOneAndUpdate({
-        _id: id,
-    }, {
-        name,
-        memo,
-        seq
-    }).then(d => {
-        return d;
-    })
-    if (result) {
-        return ctx.body = {
-            state: 200,
-            msg: '编辑成功',
+    let creator = await getUserInfo(ctx, jstSecret, "propduct");//获取token
+    if (creator) {
+        let result = await Product.findOneAndUpdate({
+            _id: id,
+        }, {
+            name,
+            memo,
+            seq
+        }).then(d => {
+            return d;
+        })
+        if (result) {
+            return ctx.body = {
+                state: 200,
+                msg: '编辑成功',
+            }
+        } else {
+            return ctx.body = {
+                state: 201,
+                msg: '编辑失败',
+            }
         }
     } else {
-        return ctx.body = {
+        return (ctx.body = {
             state: 201,
-            msg: '编辑失败',
-        }
+            msg: "无权限,请登录管理员账号",
+        });
     }
 });
 
