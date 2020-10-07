@@ -22,7 +22,8 @@ app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
 app.use(require('koa-static')(__dirname + '/upload'))
-app.use(require('koa-static')(__dirname + '/views')) // 
+app.use(require('koa-static')(__dirname + '/views')) 
+app.use(require('koa-static')(__dirname + '/front')) // 
 // app.use(require('koa-static')(__dirname + '/views/webapp'))
 // logger
 app.use(async (ctx, next) => {
