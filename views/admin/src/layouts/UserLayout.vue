@@ -5,16 +5,14 @@
         <div class="header">
           <a href="/">
             <!-- <img src="~@/assets/logo.svg" class="logo" alt="logo" /> -->
-            <span class="title">Tearoyale Admin</span>
+            <span class="title">Shop Admin</span>
           </a>
         </div>
         <div class="desc"></div>
       </div>
       <router-view />
       <div class="footer">
-        <div class="copyright">
-          Copyright &copy; 178037754@qq.com
-        </div>
+        <div class="copyright">Copyright &copy; 178037754@qq.com</div>
       </div>
     </div>
   </div>

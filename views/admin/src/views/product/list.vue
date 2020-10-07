@@ -4,22 +4,19 @@
       <a-table-column title="序号" data-index="seq"></a-table-column>
       <a-table-column title="图片">
         <template slot-scope="scope">
-          <img :src="scope.thumb" height="100px" />
+          <img :src="scope.filepath" height="100px" />
         </template>
       </a-table-column>
-      <a-table-column title="分类名" data-index="title"></a-table-column>
-      <a-table-column title="描述" data-index="desc"></a-table-column>
-      <a-table-column title="背景色" data-index="background_color"></a-table-column>
-      <a-table-column title="展示类型" data-index="type"></a-table-column>
+      <a-table-column title="名称" data-index="name"></a-table-column>
+      <a-table-column title="描述" data-index="memo"></a-table-column>
       <a-table-column>
         <template slot-scope="scope">
-          <a-button size="small" @click="goProduct(scope)" style="margin-right:14px;">产品</a-button>
-          <a-button type="primary" size="small" style="margin-right:14px;" @click="edit(scope)">编辑</a-button>
+          <a-button type="primary" size="small" style="margin-right: 14px" @click="edit(scope)">编辑</a-button>
           <a-button type="danger" size="small" @click="del(scope._id)">删除</a-button>
         </template>
       </a-table-column>
     </a-table>
-    <a-row style="margin:10px 0;">
+    <a-row style="margin: 10px 0">
       <a-button type="primary" @click="add">新建</a-button>
     </a-row>
     <a-modal v-model="visible" :title="title" width="600px" @ok="handleOk">
@@ -27,35 +24,22 @@
         <a-form-item label="序号">
           <a-input v-model="form.seq"></a-input>
         </a-form-item>
-        <a-form-item label="分类名">
-          <a-input v-model="form.title"></a-input>
-        </a-form-item>
-        <a-form-item label="链接">
-          <a-input v-model="form.url"></a-input>
+        <a-form-item label="名称">
+          <a-input v-model="form.name"></a-input>
         </a-form-item>
         <a-form-item label="描述">
-          <a-input v-model="form.desc"></a-input>
+          <a-input v-model="form.memo"></a-input>
         </a-form-item>
-        <a-form-item label="背景色">
-          <a-input v-model="form.background_color"></a-input>
-        </a-form-item>
-        <a-form-item label="展示类型">
-          <a-select v-model="form.type">
-            <a-select-option value="3">3个</a-select-option>
-            <a-select-option value="6">6个</a-select-option>
-            <a-select-option value="9">9个</a-select-option>
-            <a-select-option value="12">12个</a-select-option>
-          </a-select>
-        </a-form-item>
+
         <a-form-item label="图片">
           <a-upload
             list-type="picture-card"
             class="avatar-uploader"
             :show-upload-list="false"
-            action="/admin/upload/"
+            action="/admin/user/upload"
             @change="handleChange"
           >
-            <img v-if="form.thumb" :src="form.thumb" alt="avatar" />
+            <img v-if="form.filepath" :src="form.filepath" alt="avatar" />
             <div v-else>
               <a-icon :type="loading ? 'loading' : 'plus'" />
               <div class="ant-upload-text">Upload</div>
@@ -79,12 +63,9 @@ export default {
       type: 'add',
       form: {
         seq: '',
-        title: "",
-        type: 3,
-        background_color: "",
-        desc: "",
-        thumb: "",
-        url: ""
+        name: "",
+        memo: "",
+        filepath: "",
       },
       loading: false,
       page: {
@@ -104,19 +85,16 @@ export default {
       this.type = 'add'
       this.form = {
         seq: '',
-        title: "",
-        type: 3,
-        background_color: "",
-        desc: "",
-        thumb: "",
-        url: ""
+        name: "",
+        memo: "",
+        filepath: "",
       };
 
     },
     handleOk() {
-      let url = "/admin/classify/add"
+      let url = "/admin/user/add"
       if (this.type == "edit") {
-        url = "/admin/classify/edit"
+        url = "/admin/user/edit"
       }
       this.$http.post(url, this.form).then(res => {
         if (res) {
@@ -133,18 +111,13 @@ export default {
       if (info.file.status === 'done') {
         this.loading = false
         if (info.file.response && info.file.response.state == 200) {
-          this.form['thumb'] = info.file.response.url
+          this.form['filepath'] = info.file.response.url
         }
       }
     },
-    goProduct(data) {
-      this.$emit('show', {
-        show: true,
-        classifyId: data._id
-      })
-    },
+
     getSearch() {
-      this.$http.get("/admin/classify/list?type=1&s=" + (this.page.current - 1) * this.page.pageSize + "&n=" + this.page.pageSize).then(res => {
+      this.$http.get("/admin/user/list?s=" + (this.page.current - 1) * this.page.pageSize + "&n=" + this.page.pageSize).then(res => {
         if (res) {
           this.list = res.data || []
           this.page.total = res.total || 0;
@@ -195,7 +168,7 @@ export default {
         title: "提示",
         content: h => <div style="color:red;">确定删除当前数据</div>,
         onOk: () => {
-          this.$http.post("/admin/classify/del", {
+          this.$http.post("/admin/user/delete", {
             id
           }).then(res => {
             if (res) {

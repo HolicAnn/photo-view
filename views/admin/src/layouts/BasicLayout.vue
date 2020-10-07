@@ -1,6 +1,6 @@
 <template>
   <pro-layout
-    title="Tearoyale-Admin"
+    title="Shop-Admin"
     :menus="menus"
     :collapsed="collapsed"
     :mediaQuery="query"
