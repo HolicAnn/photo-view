@@ -55,12 +55,9 @@ router.post("/login", async ctx => {
     }
 });
 
-//新建上传
+//上传
 router.post("/upload", async (ctx, next) => {
     let {
-        name,//名称
-        memo,//描述
-        seq,//序号,数字越大越靠前
         filepath//图片路径
     } = ctx.request.body;
     let creator = await getUserInfo(ctx, jstSecret, "propduct");//获取token
@@ -104,11 +101,47 @@ router.post("/upload", async (ctx, next) => {
 
             upload_file(file_name, file_path);
             let url = 'http://mini.sylvia.org.cn/' + prefix + file_name;
+
+            return (ctx.body = {
+                state: 200,
+                msg: "上传成功",
+                url: url,
+            });
+        } else {
+            return (ctx.body = {
+                state: 201,
+                msg: "权限错误,请登录管理员账号!",
+            });
+        }
+    } else {
+        return (ctx.body = {
+            state: 201,
+            msg: "请登录后重试！",
+        });
+    }
+});
+
+//新建
+router.post("/add", async (ctx, next) => {
+    let {
+        name,//名称
+        memo,//描述
+        seq,//序号,数字越大越靠前
+        filepath//图片路径
+    } = ctx.request.body;
+    let creator = await getUserInfo(ctx, jstSecret, "propduct");//获取token
+    if (creator) {
+        let user = await User.findOne({
+            username: creator.username
+        }).then((doc) => {
+            return doc;
+        })
+        if (user.password == creator.password) {
             let product = await new Product({
                 name,
                 memo,
                 seq,
-                url
+                url: filepath
             });
             let data = await product.save().then((doc) => {
                 return doc;
@@ -179,25 +212,38 @@ router.post("/delete", async (ctx) => {
     let { id } = ctx.request.body;
     let creator = await getUserInfo(ctx, jstSecret, "propduct");//获取token
     if (creator) {
-        let result = await Product.findByIdAndDelete({
-            _id: id,
-        });
+        let user = await User.findOne({
+            username: creator.username
+        }).then((doc) => {
+            return doc;
+        })
+        if (user.password == creator.password) {
 
-        if (result) {
-            return (ctx.body = {
-                state: 200,
-                msg: "删除成功",
+            let result = await Product.findByIdAndDelete({
+                _id: id,
             });
+
+            if (result) {
+                return (ctx.body = {
+                    state: 200,
+                    msg: "删除成功",
+                });
+            } else {
+                return (ctx.body = {
+                    state: 201,
+                    msg: "操作失败",
+                });
+            }
         } else {
             return (ctx.body = {
                 state: 201,
-                msg: "操作失败",
+                msg: "无权限,请登录管理员账号",
             });
         }
     } else {
         return (ctx.body = {
             state: 201,
-            msg: "无权限,请登录管理员账号",
+            msg: "请登录后重试！",
         });
     }
 });
@@ -208,33 +254,48 @@ router.post('/edit', async (ctx, next) => {
         name,
         memo,
         seq,
+        filepath
     } = ctx.request.body;
     let creator = await getUserInfo(ctx, jstSecret, "propduct");//获取token
     if (creator) {
-        let result = await Product.findOneAndUpdate({
-            _id: id,
-        }, {
-            name,
-            memo,
-            seq
-        }).then(d => {
-            return d;
+        let user = await User.findOne({
+            username: creator.username
+        }).then((doc) => {
+            return doc;
         })
-        if (result) {
-            return ctx.body = {
-                state: 200,
-                msg: '编辑成功',
+        if (user.password == creator.password) {
+
+            let result = await Product.findOneAndUpdate({
+                _id: id,
+            }, {
+                name,
+                memo,
+                seq,
+                url: filepath
+            }).then(d => {
+                return d;
+            })
+            if (result) {
+                return ctx.body = {
+                    state: 200,
+                    msg: '编辑成功',
+                }
+            } else {
+                return ctx.body = {
+                    state: 201,
+                    msg: '编辑失败',
+                }
             }
         } else {
-            return ctx.body = {
+            return (ctx.body = {
                 state: 201,
-                msg: '编辑失败',
-            }
+                msg: "无权限,请登录管理员账号",
+            });
         }
     } else {
         return (ctx.body = {
             state: 201,
-            msg: "无权限,请登录管理员账号",
+            msg: "请登录后重试!",
         });
     }
 });
