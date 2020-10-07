@@ -80,9 +80,7 @@ router.post("/upload", async (ctx, next) => {
                 return policy.uploadToken();
             }
             const config = new qiniu_sdk.conf.Config();
-            //let file_name = 'qqqqah.jpg';//存储文件名称
-            let file_name = uuid.v4() + '.jpg';//只能存储jpeg格式图片
-            //let file_path = '/Users/alan/Desktop/xin.jpeg';//图片地址
+            let file_name = uuid.v4();
             let file_path = filepath;
             const upload_file = (file_name, file_path) => {
                 const file_save_path = prefix + file_name;// 保存到七牛的地址
