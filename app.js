@@ -1,3 +1,4 @@
+
 const Koa = require('koa')
 const app = new Koa()
 const json = require('koa-json')
@@ -73,7 +74,7 @@ app.on('error', (err, ctx) => {
 });
 //mongoose
 mongoose.connect(
-    "mongodb://localhost/tearoyale", 
+    "mongodb://146.56.204.2/shop",
     (err) => {
         if (err) {
             console.log("数据库连接出错");
