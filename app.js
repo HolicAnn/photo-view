@@ -58,7 +58,7 @@ app.use(
 );
 app.use(router.routes())
 router.get("/admin", async ctx => {
-    let html = fs.readFileSync(__dirname + "/views/admin/index.html", "utf-8")
+    let html = fs.readFileSync(__dirname + "/front/admin/index.html", "utf-8")
     ctx.status = 200
     ctx.body = html;
 });
