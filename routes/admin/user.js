@@ -56,7 +56,7 @@ router.post("/login", async ctx => {
 });
 
 //上传
-router.post("/upload", async(ctx, next) => {
+router.post("/upload", async (ctx, next) => {
     let {
         path //图片路径
     } = ctx.request.files.filepath;
@@ -124,7 +124,7 @@ router.post("/upload", async(ctx, next) => {
 });
 
 //新建
-router.post("/add", async(ctx, next) => {
+router.post("/add", async (ctx, next) => {
     let {
         name, //名称
         memo, //描述
@@ -176,8 +176,8 @@ router.post("/add", async(ctx, next) => {
 
 router.get("/list", async ctx => {
     let list = await Product.find({}).sort({
-            seq: -1
-        })
+        seq: -1
+    })
         .then((doc) => {
             return doc;
         })
@@ -185,7 +185,9 @@ router.get("/list", async ctx => {
     return (ctx.body = {
         state: 200,
         msg: "获取商品成功",
-        list: list
+        list: list,
+        title: "哈哈"
+
     });
 });
 
@@ -212,7 +214,7 @@ router.get("/detail", async ctx => {
     }
 });
 
-router.post("/delete", async(ctx) => {
+router.post("/delete", async (ctx) => {
     let {
         id
     } = ctx.request.body;
@@ -254,7 +256,7 @@ router.post("/delete", async(ctx) => {
     }
 });
 
-router.post('/edit', async(ctx, next) => {
+router.post('/edit', async (ctx, next) => {
     let {
         _id,
         name,
