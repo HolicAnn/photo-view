@@ -1,10 +1,10 @@
 <template>
   <div>
-    <a-table :data-source="list" :pagination="page" @change="change">
+    <a-table :pagination="false" :data-source="list"  @change="change">
       <a-table-column title="序号" data-index="seq"></a-table-column>
       <a-table-column title="图片">
         <template slot-scope="scope">
-          <img :src="scope.filepath" height="100px" />
+          <img :src="scope.url" height="100px" />
         </template>
       </a-table-column>
       <a-table-column title="名称" data-index="name"></a-table-column>
@@ -36,7 +36,8 @@
             list-type="picture-card"
             class="avatar-uploader"
             :show-upload-list="false"
-            action="/admin/user/upload"
+            name="filepath"
+            action="/admin/user/upload/"
             @change="handleChange"
           >
             <img v-if="form.filepath" :src="form.filepath" alt="avatar" />
@@ -117,10 +118,10 @@ export default {
     },
 
     getSearch() {
-      this.$http.get("/admin/user/list?s=" + (this.page.current - 1) * this.page.pageSize + "&n=" + this.page.pageSize).then(res => {
+      this.$http.get("/admin/user/list").then(res => {
         if (res) {
-          this.list = res.data || []
-          this.page.total = res.total || 0;
+          this.list = res.list || []
+       //   this.page.total = res.total || 0;
         }
       })
     },
@@ -132,6 +133,7 @@ export default {
     edit(data) {
       this.type = "edit";
       this.form = this.deepClone(data);
+      this.form.filepath=data.url;
       this.visible = true
       this.title = '编辑'
     },

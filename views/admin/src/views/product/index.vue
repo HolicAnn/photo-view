@@ -1,13 +1,6 @@
 <template>
   <div>
-    <a-tabs v-model="defaultKey" @change="change">
-      <a-tab-pane key="1" tab="分类列表">
-        <list-view @show="showTab"></list-view>
-      </a-tab-pane>
-      <a-tab-pane v-if="show && classifyId" key="2" tab="产品列表">
-        <item-view :parentId="classifyId"></item-view>
-      </a-tab-pane>
-    </a-tabs>
+    <list-view @show="showTab"></list-view>
   </div>
 </template>
 

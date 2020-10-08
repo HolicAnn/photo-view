@@ -13,7 +13,7 @@ const whiteList = ['/login', '/register', '/registerResult'] // no redirect whit
 
 router.beforeEach((to, from, next) => {
     NProgress.start() // start progress bar
-    if (Cookies.get('admin_token')) {
+    if (Cookies.get('propduct')) {
         next()
     } else {
         if (whiteList.includes(to.path)) {

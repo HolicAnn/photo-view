@@ -48,7 +48,7 @@ export default {
     submit(e) {
       this.$http.post('/admin/user/login', this.form).then(res => {
         if (res) {
-          this.$router.push({ path: '/base' })
+          this.$router.push({ path: '/product' })
         }
       })
 

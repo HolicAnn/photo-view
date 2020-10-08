@@ -1,9 +1,8 @@
-
 const Koa = require('koa')
 const app = new Koa()
 const json = require('koa-json')
 const onerror = require('koa-onerror')
-// const bodyparser = require('koa-bodyparser')
+    // const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const mongoose = require('mongoose')
 const koaBody = require("koa-body")
@@ -12,21 +11,21 @@ const router = require('koa-router')()
 const fs = require("fs")
 const https = require("https")
 const path = require("path")
-// error handler
+    // error handler
 onerror(app)
-// middlewares
-// app.use(bodyparser({
-//   enableTypes: ['json', 'form', 'text']
-// }))
+    // middlewares
+    // app.use(bodyparser({
+    //   enableTypes: ['json', 'form', 'text']
+    // }))
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
 app.use(require('koa-static')(__dirname + '/upload'))
-app.use(require('koa-static')(__dirname + '/views')) 
+app.use(require('koa-static')(__dirname + '/views'))
 app.use(require('koa-static')(__dirname + '/front')) // 
-// app.use(require('koa-static')(__dirname + '/views/webapp'))
-// logger
-app.use(async (ctx, next) => {
+    // app.use(require('koa-static')(__dirname + '/views/webapp'))
+    // logger
+app.use(async(ctx, next) => {
     const start = new Date()
     await next()
     const ms = new Date() - start
@@ -49,12 +48,12 @@ app.use(
         jsonLimit: "100mb",
         textLimit: "100mb",
         multipart: true, // 支持文件上传
-        //encoding: 'gzip',
-        formidable: {
-            uploadDir: path.join(__dirname, './upload/'), // 设置文件上传目录
-            keepExtensions: true, // 保持文件的后缀
-            maxFieldsSize: 2 * 1024 * 1024, // 文件上传大小
-        },
+        // //encoding: 'gzip',
+        // formidable: {
+        //     uploadDir: path.join(__dirname, './upload/'), // 设置文件上传目录
+        //     keepExtensions: true, // 保持文件的后缀
+        //     maxFieldsSize: 2 * 1024 * 1024, // 文件上传大小
+        // },
     })
 );
 app.use(router.routes())
@@ -64,7 +63,7 @@ router.get("/admin", async ctx => {
     ctx.body = html;
 });
 router.get("/", async ctx => {
-    let html = fs.readFileSync(__dirname + "/views/webapp/index.html", "utf-8")
+    let html = fs.readFileSync(__dirname + "/front/shop/index.html", "utf-8")
     ctx.status = 200
     ctx.body = html;
 });

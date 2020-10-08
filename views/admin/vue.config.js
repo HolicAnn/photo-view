@@ -31,7 +31,7 @@ const assetsCDN = {
 
 // vue.config.js
 const vueConfig = {
-    outputDir: "admin",
+    outputDir: path.resolve("../../", "./front/", "./admin/"),
     publicPath: "/admin/",
 
     configureWebpack: {
@@ -105,8 +105,8 @@ const vueConfig = {
         // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
         proxy: {
             '/': {
-                //target: 'http://localhost:3000',
-                target: "https://47.91.43.223",
+                target: 'http://127.0.0.1:3000',
+                //   target: "https://47.91.43.223",
                 ws: false,
                 changeOrigin: true,
                 // pathRewrite: {
