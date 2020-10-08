@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h2>Title</h2>
+    <h2>{{ title }}</h2>
     <ul>
       <li v-for="(res, index) in list" :key="index" @click="go(res)">
         <p><img width="100%" :src="res.url" /></p>
@@ -15,7 +15,8 @@ export default {
   name: 'first',
   data() {
     return {
-      list: []
+      list: [],
+      title: ""
     }
   },
   mounted() {
@@ -27,6 +28,7 @@ export default {
         console.log(res)
         if (res && res.list) {
           this.list = res.list;
+          this.title = res.title;
         }
       })
     },
@@ -51,7 +53,7 @@ ul {
   overflow: auto;
 }
 ul li {
-  width: 200px;
+  width: 39%;
   float: left;
   padding: 10px;
   background: #fff;
@@ -61,7 +63,7 @@ ul li {
   display: block;
   cursor: pointer;
 }
-ul li:hover{
+ul li:hover {
   box-shadow: 2px 0px 4px 2px #eee;
 }
 ul li img {

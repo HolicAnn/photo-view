@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="header">
+      <span class="back" @click="back">< 返回</span>
+    </div>
     <h2>{{ info.name }}</h2>
     <p><img width="100%" :src="info.url" /></p>
     <p class="memo" :title="info.memo">{{ info.memo }}</p>
@@ -25,6 +28,11 @@ export default {
           this.info = res.data;
         }
       })
+    },
+    back() {
+      this.$router.replace({
+        path: "/"
+      })
     }
   },
 }
@@ -37,7 +45,7 @@ h2 {
   padding: 30px 0;
   font-size: 50px;
 }
-.container{
+.container {
   text-align: center;
 }
 ul {
@@ -55,15 +63,26 @@ ul li {
 }
 img {
   max-width: 300px;
-  margin-bottom:20px ;
+  margin-bottom: 20px;
 }
 .name {
   font-size: 20px;
   margin: 4px 0;
 }
 .memo {
-  padding:  20px;
+  padding: 20px;
   color: #827878;
   text-align: left;
+}
+.header {
+  text-align: left;
+}
+.back {
+  display: inline-block;
+  padding: 6px;
+  background: #fff;
+  border-radius: 4px;
+  margin: 8px;
+
 }
 </style>
