@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="header">
-      <span class="back" @click="back">< 返回</span>
+      <span class="back" @click="back">back</span>
     </div>
-    <h2>{{ info.name }}</h2>
+    <h3>{{ info.name }}</h3>
     <p><img width="100%" :src="info.url" /></p>
     <p class="memo" :title="info.memo">{{ info.memo }}</p>
   </div>

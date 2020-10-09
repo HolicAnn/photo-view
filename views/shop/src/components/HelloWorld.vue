@@ -4,7 +4,9 @@
     <ul>
       <li v-for="(res, index) in list" :key="index" @click="go(res)">
         <p><img width="100%" :src="res.url" /></p>
-        <p class="name" :title="res.name">{{ res.name }}</p>
+        <p class="name" :title="res.name" style="font-size: 14px">
+          {{ res.name }}
+        </p>
       </li>
     </ul>
   </div>
@@ -12,34 +14,33 @@
 
 <script>
 export default {
-  name: 'first',
+  name: "first",
   data() {
     return {
       list: [],
-      title: ""
-    }
+      title: "",
+    };
   },
   mounted() {
     this.getList();
   },
   methods: {
     getList() {
-      this.$http.get("/admin/user/list").then(res => {
-        console.log(res)
+      this.$http.get("/admin/user/list").then((res) => {
+        console.log(res);
         if (res && res.list) {
           this.list = res.list;
           this.title = res.title;
         }
-      })
+      });
     },
     go(data) {
       this.$router.push({
-        path: "/detail/" + data._id
-      })
-
-    }
+        path: "/detail/" + data._id,
+      });
+    },
   },
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
