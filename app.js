@@ -63,7 +63,7 @@ router.get("/admin", async ctx => {
     ctx.body = html;
 });
 router.get("/", async ctx => {
-    let html = fs.readFileSync(__dirname + "/front/shop/index.html", "utf-8")
+    let html = fs.readFileSync(__dirname + "/front/webapp/index.html", "utf-8")
     ctx.status = 200
     ctx.body = html;
 });
