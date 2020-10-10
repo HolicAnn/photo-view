@@ -1,38 +1,33 @@
 <template>
   <div class="container">
     <div class="header">
-      <span class="back" @click="back">back</span>
+      <span class="back" @click="back">X</span>
     </div>
     <h3>{{ info.name }}</h3>
     <p><img width="100%" :src="info.url" /></p>
-    <p class="memo" :title="info.memo">{{ info.memo }}</p>
+    <!-- <p class="memo" :title="info.memo">{{ info.memo }}</p> -->
   </div>
 </template>
 
 <script>
 export default {
   name: 'first',
+  props:["info"],
   data() {
     return {
-      info: []
+     // info: []
     }
   },
   mounted() {
-    this.getDetail();
+    console.log(this.info)
+   // this.getDetail();
   },
   methods: {
-    getDetail() {
-      this.$http.get("/admin/user/detail?id=" + this.$route.params.id).then(res => {
-        console.log(res)
-        if (res && res.data) {
-          this.info = res.data;
-        }
-      })
-    },
     back() {
-      this.$router.replace({
-        path: "/"
-      })
+      this.$parent.show=false;
+      // this.$router.replace({
+      //   path: "/"
+      // })
     }
   },
 }
@@ -42,8 +37,8 @@ export default {
 <style scoped>
 h3 {
   text-align: center;
-  padding: 30px 0;
-  font-size: 30px;
+  font-size: 14px;
+  padding: 10px 0;
 }
 .container {
   text-align: center;
@@ -62,8 +57,7 @@ ul li {
   display: block;
 }
 img {
-  max-width: 300px;
-  margin-bottom: 20px;
+  max-width: 98%;
 }
 .name {
   font-size: 20px;
@@ -79,10 +73,19 @@ img {
 }
 .back {
   display: inline-block;
-  padding: 6px;
+  padding: 6px 8px;
   background: #fff;
   border-radius: 4px;
   margin: 8px;
+}
+.container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: all 0.2s ease-in-out;
 
 }
 </style>

@@ -4,23 +4,33 @@
     <ul>
       <li v-for="(res, index) in list" :key="index" @click="go(res)">
         <div class="item">
-          <p><img width="100%" :src="res.url" /></p>
+          <p class="img"><img width="100%" :src="res.url" /></p>
           <p class="name" :title="res.name" style="font-size: 14px">
             {{ res.name }}
           </p>
         </div>
       </li>
     </ul>
+    <transition name="fade">
+       <my-img v-if="show" :info="data"></my-img>
+    </transition>
+
   </div>
 </template>
 
 <script>
+import MyImg from "./detail";
 export default {
+  components: {
+    MyImg
+  },
   name: "first",
   data() {
     return {
       list: [],
       title: "",
+      data: {},
+      show: false,
     };
   },
   mounted() {
@@ -37,9 +47,12 @@ export default {
       });
     },
     go(data) {
-      this.$router.push({
-        path: "/detail/" + data._id,
-      });
+      this.data = data;
+      console.log(this.data)
+      this.show = true;
+      // this.$router.push({
+      //   path: "/detail/" + data._id,
+      // });
     },
   },
 };
@@ -49,8 +62,9 @@ export default {
 <style scoped>
 h2 {
   text-align: center;
-  padding: 30px 0;
-  font-size: 30px;
+  padding: 10px 0;
+  font-size: 14px;
+  padding-bottom: 0;
 }
 ul {
   overflow: auto;
@@ -58,7 +72,6 @@ ul {
 ul li {
   width: 50%;
   float: left;
-
 
   /* margin: 10px; */
   border-radius: 2px;
@@ -69,11 +82,15 @@ ul li {
 }
 .item {
   margin: 10px;
-    background: #fff;
-      padding: 10px;
+  background: #fff;
+  background: #f7e6cd;
 }
 ul li:hover {
   box-shadow: 2px 0px 4px 2px #eee;
+}
+.img {
+  padding: 10px;
+  background: #fff;
 }
 ul li img {
   height: 200px;
@@ -91,5 +108,12 @@ ul li img {
 }
 .memo {
   color: #827878;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: all .2s linear;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  transform: scale(0.5);
+  opacity:0.5
 }
 </style>
