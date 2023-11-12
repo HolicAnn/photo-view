@@ -5,7 +5,8 @@ const onerror = require('koa-onerror')
     // const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const mongoose = require('mongoose')
-const koaBody = require("koa-body")
+const {koaBody} = require("koa-body")
+console.log(koaBody)
 const routes = require("./routes/index")
 const router = require('koa-router')()
 const fs = require("fs")
@@ -74,7 +75,7 @@ app.on('error', (err, ctx) => {
 });
 //mongoose
 mongoose.connect(
-    "mongodb://146.56.204.2/shop",
+    "mongodb://localhost:27017/shop",
     (err) => {
         if (err) {
             console.log("数据库连接出错");

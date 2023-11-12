@@ -39,8 +39,8 @@ export default {
       loading: false,
       isLoginError: false,
       form: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       }
     }
   },

@@ -22,6 +22,12 @@ import './permission' // permission control
 import './utils/filter' // global filter
 import './global.less'
 import axios from "./utils/http"
+import VueMarkdownEditor from '@kangc/v-md-editor';
+import '@kangc/v-md-editor/lib/style/base-editor.css';
+import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
+import '@kangc/v-md-editor/lib/theme/style/github.css';
+VueMarkdownEditor.use(githubTheme)
+Vue.use(VueMarkdownEditor);
 // import * as VueGoogleMaps from "vue2-google-maps";
 
 

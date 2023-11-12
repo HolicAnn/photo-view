@@ -5,6 +5,8 @@ const crypto = require("crypto");
 const jwt = require("jwt-simple");
 const uuid = require("uuid");
 const getUserInfo = require("../../util/getUserInfo");
+const fs = require("fs")
+const path = require("path")
 // router.prefix('/user')
 const {
     jstSecret
@@ -58,9 +60,11 @@ router.post("/login", async ctx => {
 //上传
 router.post("/upload", async (ctx, next) => {
     let {
-        path //图片路径
+        filepath,
+        newFilename,
+        originalFilename //图片路径
     } = ctx.request.files.filepath;
-    console.log(ctx.request.files.filepath)
+   // console.log("222", ctx.request.files.filepath)
     let creator = await getUserInfo(ctx, jstSecret, "propduct"); //获取token
     if (creator) {
         let user = await User.findOne({
@@ -69,45 +73,18 @@ router.post("/upload", async (ctx, next) => {
             return doc;
         })
         if (user.password == creator.password) {
-            const qiniu_sdk = require('qiniu')
-            const accessKey = 'hngh71R29yRS5QgFJYbm70Ssaao8gcF3jWv--npm';
-            const secretKey = 'EOjFL82mNt51W19xtWlIFkgZRDFIR7_1-x4IFbo1';
-            const bucket = 'hahaha123123'; // 要上传的空间
-            const prefix = 'haha/'; // 文件前缀
-            qiniu_sdk.conf.ACCESS_KEY = accessKey;
-            qiniu_sdk.conf.SECRET_KEY = secretKey;
-            const token = (bucket, key) => { // 生成上传文件的 token
-                const policy = new qiniu_sdk.rs.PutPolicy({
-                    isPrefixalScope: 1,
-                    scope: bucket + ':' + key
-                });
-                return policy.uploadToken();
-            }
-            const config = new qiniu_sdk.conf.Config();
-            let file_name = uuid.v4();
-            let file_path = path;
-            const upload_file = (file_name, file_path) => {
-                const file_save_path = prefix + file_name; // 保存到七牛的地址
-                const up_token = token(bucket, file_save_path); // 七牛上传的token
-                const extra = new qiniu_sdk.form_up.PutExtra();
-                const formUploader = new qiniu_sdk.form_up.FormUploader(config);
-                formUploader.putFile(up_token, file_save_path, file_path, extra, (err, ret) => { // 上传文件
-                    if (!err) {
-                        let url_ = 'http://mini.sylvia.org.cn/' + ret.key;
-                        console.log(url_); // 上传成功， 处理返回值
-                    } else {
-                        console.error(err); // 上传失败， 处理返回代码
-                    }
-                })
-            }
-
-            upload_file(file_name, file_path);
-            let url = 'http://mini.sylvia.org.cn/' + prefix + file_name;
-
+            const randomNum = new Date().getHours() + "" + new Date().getMinutes() + Math.random() * 999999;
+            const reader = fs.createReadStream(filepath);
+            let cfilePath = path.join(__dirname, '../../public/upload/image/') + `${randomNum}_${originalFilename}`;
+            // let filePath = path.join(__dirname, '../public/upload/image/user/') + `/${element[1].name}`; 斜杆问题注意一下
+            // 创建可写流
+            const upStream = fs.createWriteStream(cfilePath);
+            // 可读流通过管道写入可写流
+            reader.pipe(upStream);
             return (ctx.body = {
                 state: 200,
                 msg: "上传成功",
-                url: url,
+                url: '/upload/image/' + `${randomNum}_${originalFilename}`,
             });
         } else {
             return (ctx.body = {
@@ -127,7 +104,7 @@ router.post("/upload", async (ctx, next) => {
 router.post("/add", async (ctx, next) => {
     let {
         name, //名称
-        memo, //描述
+        text, //描述
         seq, //序号,数字越大越靠前
         filepath //图片路径
     } = ctx.request.body;
@@ -141,7 +118,7 @@ router.post("/add", async (ctx, next) => {
         if (user.password == creator.password) {
             let product = await new Product({
                 name,
-                memo,
+                text,
                 seq,
                 url: filepath
             });
@@ -176,8 +153,8 @@ router.post("/add", async (ctx, next) => {
 
 router.get("/list", async ctx => {
     let list = await Product.find({}).sort({
-        seq: -1
-    })
+            seq: -1
+        })
         .then((doc) => {
             return doc;
         })
@@ -260,7 +237,7 @@ router.post('/edit', async (ctx, next) => {
     let {
         _id,
         name,
-        memo,
+        text,
         seq,
         filepath
     } = ctx.request.body;
@@ -275,7 +252,7 @@ router.post('/edit', async (ctx, next) => {
 
             let result = await Product.findByIdAndUpdate(_id, {
                 name,
-                memo,
+                text,
                 seq,
                 url: filepath
             }).then(d => {

@@ -3,7 +3,7 @@
     <h2>{{ title }}</h2>
     <ul>
       <li v-for="(res, index) in list" :key="index" @click="go(res)">
-        <p><img width="100%" :src="res.url" /></p>
+        <p><img width="100%" style="object-fit:fill" :src="res.url" /></p>
         <p class="name" :title="res.name" style="font-size: 14px">
           {{ res.name }}
         </p>

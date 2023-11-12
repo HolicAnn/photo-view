@@ -5,7 +5,7 @@ var schema = mongoose.Schema({
     name: String,
     seq: Number,
     url: String,
-    memo: String
+    text: String
 }, {
     versionKey: false //版本号不更新
 });
